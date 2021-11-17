@@ -1,0 +1,28 @@
+{
+  "name": "qa-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server/index.js",
+    "prepare": "husky install",
+    "test": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Prospero-Unity/qa-api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Prospero-Unity/qa-api/issues"
+  },
+  "homepage": "https://github.com/Prospero-Unity/qa-api#readme",
+  "devDependencies": {
+    "express": "^4.17.1",
+    "husky": "^7.0.4",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.15",
+    "pg": "^8.7.1"
+  }
+}
