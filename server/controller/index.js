@@ -1,7 +1,12 @@
 const model = require('./../model');
 
 module.exports = {
-  get: async (req, res) => {
-    res.send(await model.getAll());
+
+  getQuestions: async (req, res) => {
+    res.send(await model.getQuestions());
+  },
+
+  getAnswers: async (req, res) => {
+    res.send(await model.getAnswers())
   }
 }
