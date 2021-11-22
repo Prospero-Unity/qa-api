@@ -18,7 +18,7 @@ module.exports = {
       FROM answers
       LEFT   JOIN photos
       ON photos.answer_id = answers.answer_id
-      WHERE answers.question_id = 78
+      WHERE answers.question_id = ${qid}
       GROUP BY answers.answer_id
       LIMIT 5`)
         .then(results => {
