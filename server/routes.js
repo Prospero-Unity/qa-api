@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const controller = require('./controller');
 
-router.get('/api/products/questions', controller.get);
+router.get('/qa/questions/', controller.getQuestions);
+router.get('/qa/questions/:question_id/answers', controller.getAnswers);
 
 module.exports = router;
