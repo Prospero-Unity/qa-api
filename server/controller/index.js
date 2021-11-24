@@ -2,26 +2,26 @@ const model = require('./../model');
 
 async function queryAnswers(qid, page, count) {
 
-  const answers = {}
-  const answerResults = await model.getAnswers(qid, page, count)
-                          .then(results => results).catch(error => error);
+  try {
+    const answers = {}
+    const answerResults = await model.getAnswers(qid, page, count);
 
-  for (let answer of answerResults) {
-    const answerID = answer.answer_id;
-    const obj = {}
-    obj.id = answerID;
-    obj.body = answer.answer_body;
-    obj.date = answer.answer_date;
-    obj.answerer_name = answer.answerer_name;
-    obj.helpfulness = answer.answer_helpfulness
-    obj.photos = await model.getPhotos(answerID)
-                   .then(([photos]) => {
-                     return photos ? photos.photos : []
-                   })
-                   .catch(error => error);
-    answers[answerID] = obj;
+    for (let answer of answerResults) {
+      const answerID = answer.answer_id;
+      const obj = {}
+      obj.id = answerID;
+      obj.body = answer.answer_body;
+      obj.date = answer.answer_date;
+      obj.answerer_name = answer.answerer_name;
+      obj.helpfulness = answer.answer_helpfulness;
+      obj.photos = await model.getPhotos(answerID);
+      answers[answerID] = obj;
+    }
+    return answers;
+  } catch (error) {
+    console.log(error)
+    return error;
   }
-  return answers;
 }
 
 module.exports = {
@@ -30,11 +30,10 @@ module.exports = {
     try {
       let obj = {};
       obj.product_id = req.query.product_id;
-      obj.results = await model.getQuestions(req.query)
-        .then((results) => {return results})
-        .catch(error => error);
-        for (let question of obj.results) {
-          question.answers = await queryAnswers(question.question_id);
+      const results = await model.getQuestions(req.query);
+      obj.results = results;
+      for (let question of obj.results) {
+        question.answers = await queryAnswers(question.question_id);
       }
       res.set('Cache-Control', 'public', 'max-age=604800');
       res.send(obj);
