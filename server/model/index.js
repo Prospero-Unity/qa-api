@@ -2,21 +2,22 @@ const client = require('./../db/postgres/');
 
 module.exports = {
 
-  getQuestions: async ({product_id, page=1, count=1}) => {
+  getQuestions: async ({product_id, page=0, count=5}) => {
     return await client.query(
       `SELECT question_id, question_body, question_date,
        asker_name, question_helpfulness, reported
        FROM questions WHERE product_id = ${product_id}
-       OFFSET ${page * count - count}
-       LIMIT ${count}`)
+       OFFSET ${page} FETCH NEXT ${count} ROWS ONLY`)
       .then(results =>  results.rows)
       .catch(error => error)
   },
 
   getAnswers: async (qid, page=0, count=5) => {
     return await client.query(
-      `SELECT answer_id, answer_date, answer_body, answerer_name, answer_helpfulness
-       FROM answers WHERE question_id=${qid} LIMIT ${count}`)
+      `SELECT answer_id, answer_date, answer_body,
+       answerer_name, answer_helpfulness, reported
+       FROM answers WHERE question_id=${qid}
+       OFFSET ${page} FETCH NEXT ${count} ROWS ONLY`)
       .then(results => results.rows)
       .catch(error =>  error);
   },
