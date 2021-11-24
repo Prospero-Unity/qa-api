@@ -7,10 +7,11 @@ const app = express();
 app.use(morgan('dev'));
 app.use(compression({
   threshold: 0,
-  level: 10
+  level: 9
 }));
 app.use(express.json());
 app.use(routes);
+
 app.listen(3000, () => {
   console.log('listening on port 3000...')
 });
