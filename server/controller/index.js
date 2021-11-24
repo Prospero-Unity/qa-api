@@ -1,14 +1,25 @@
 const model = require('./../model');
 
 async function queryAnswers(qid, page, count) {
-  const answers = await model.getAnswers(qid)
-    .then(results => results)
-    .catch(error => error);
-  for (let answer of answers) {
-    const [photos] = await model.getPhotos(answer.answer_id)
-      .then(photos => photos)
-      .catch(error => error);
-    photos ? answer.photos = photos.photos : answer.photos = [];
+
+  const answers = {}
+  const answerResults = await model.getAnswers(qid, page, count)
+                          .then(results => results).catch(error => error);
+
+  for (let answer of answerResults) {
+    const answerID = answer.answer_id;
+    const obj = {}
+    obj.id = answerID;
+    obj.body = answer.answer_body;
+    obj.date = answer.answer_date;
+    obj.answerer_name = answer.answerer_name;
+    obj.helpfulness = answer.answer_helpfulness
+    obj.photos = await model.getPhotos(answerID)
+                   .then(([photos]) => {
+                     return photos ? photos.photos : []
+                   })
+                   .catch(error => error);
+    answers[answerID] = obj;
   }
   return answers;
 }
@@ -28,7 +39,6 @@ module.exports = {
       res.set('Cache-Control', 'public', 'max-age=604800');
       res.send(obj);
     } catch(error) {
-      console.log(error)
       res.status(500).send(error)
     }
   },
