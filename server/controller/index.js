@@ -25,6 +25,7 @@ module.exports = {
         for (let question of obj.results) {
           question.answers = await queryAnswers(question.question_id);
       }
+      res.set('Cache-Control', 'public', 'max-age=604800');
       res.send(obj);
     } catch(error) {
       console.log(error)
@@ -34,6 +35,7 @@ module.exports = {
 
   getAnswers: async (req, res) => {
     try {
+      res.set('Cache-Control', 'public', 'max-age=604800');
       res.send(await queryAnswers(req.params.question_id, req.query.page, req.query.count));
     } catch (error) {
       res.status(500).send(error);
