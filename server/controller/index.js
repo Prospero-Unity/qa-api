@@ -4,15 +4,8 @@ module.exports = {
 
   getQuestions: async (req, res) => {
     try {
-      let obj = {};
-      obj.product_id = req.query.product_id;
-      const results = await model.getQuestions(req.query);
-      obj.results = results;
-      for (let question of obj.results) {
-        question.answers = await model.getAnswers(question.question_id);
-      }
       res.setHeader('Cache-Control', 'public', 'max-age=604800');
-      res.send(obj);
+      res.send(await model.getQuestions(req.query));
     } catch(error) {
       res.status(500).send(error)
     }
