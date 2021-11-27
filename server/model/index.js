@@ -28,7 +28,8 @@ async function queryAnswers(qid, page=0, count=5) {
       const answerID = answer.answer_id;
       obj.id = answerID;
       obj.body = answer.answer_body;
-      obj.date = answer.answer_date;
+      console.log(answer.answer_date)
+      obj.date = new Date(answer.answer_date).toISOString();
       obj.answerer_name = answer.answerer_name;
       obj.helpfulness = answer.answer_helpfulness;
       const photos = await getPhotos(answerID);
@@ -55,6 +56,7 @@ module.exports = {
       questions.product_id = product_id;
       questions.results = results.rows;
       for (let question of questions.results) {
+        question.question_date = new Date(question.question_date).toISOString()
         question.answers = await queryAnswers(question.question_id);
       }
       return questions;
