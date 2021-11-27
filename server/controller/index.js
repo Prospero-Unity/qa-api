@@ -14,7 +14,11 @@ module.exports = {
   getAnswers: async (req, res) => {
     try {
       res.setHeader('Cache-Control', 'public', 'max-age=604800');
-      res.send(await model.getAnswers(req.params.question_id, req.query.page, req.query.count));
+      res.send(await model.getAnswers(
+          req.params.question_id,
+          req.query.page,
+          req.query.count
+      ));
     } catch (error) {
       res.status(500).send(error);
     }
@@ -26,6 +30,15 @@ module.exports = {
       res.sendStatus(201);
     } catch (error) {
       res.status(500).send(error);
+    }
+  },
+
+  addAnswer: async (req, res) => {
+    try {
+      await(model.addAnswer(req.params.question_id, req.body));
+      res.sendStatus(201);
+    } catch (error) {
+      res.status(500).send(error.toString());
     }
   }
 }
