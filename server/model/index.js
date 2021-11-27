@@ -2,12 +2,12 @@ const client = require('./../db/postgres/');
 
 async function getPhotos(answerID) {
   try {
-    const results = await client.query(
-      `SELECT COALESCE (json_agg(json_build_object('id', photo_id, 'url', url))
-        FILTER (WHERE url IS NOT NULL), '[]') AS photos from photos
-        WHERE answer_id=${answerID}
-        GROUP BY answer_id`
-    );
+    const results = await client.query(`
+      SELECT COALESCE (json_agg(json_build_object('id', photo_id, 'url', url))
+      FILTER (WHERE url IS NOT NULL), '[]') AS photos from photos
+      WHERE answer_id=${answerID}
+      GROUP BY answer_id
+    `);
     return results.rows[0] ? results.rows[0].photos : [];
   } catch (error) {
     return error;
@@ -17,12 +17,12 @@ async function getPhotos(answerID) {
 async function queryAnswers(qid, page=0, count=5) {
   try {
     const answers = {};
-    const results = await client.query(
-      `SELECT answer_id, answer_date, answer_body,
-       answerer_name, answer_helpfulness, reported
-       FROM answers WHERE question_id=${qid}
-       OFFSET ${page} FETCH NEXT ${count} ROWS ONLY`
-    );
+    const results = await client.query(`
+      SELECT answer_id, answer_date, answer_body,
+      answerer_name, answer_helpfulness, reported
+      FROM answers WHERE question_id=${qid}
+      OFFSET ${page} FETCH NEXT ${count} ROWS ONLY
+    `);
     for (let answer of results.rows) {
       const obj = {};
       const answerID = answer.answer_id;
@@ -46,12 +46,12 @@ module.exports = {
   getQuestions: async ({product_id, page=0, count=5}) => {
     try {
       const questions = {};
-      const results = await client.query(
-        `SELECT question_id, question_body, question_date,
+      const results = await client.query(`
+        SELECT question_id, question_body, question_date,
         asker_name, question_helpfulness, reported
         FROM questions WHERE product_id = ${product_id}
-        OFFSET ${page} FETCH NEXT ${count} ROWS ONLY`
-      );
+        OFFSET ${page} FETCH NEXT ${count} ROWS ONLY
+      `);
       questions.product_id = product_id;
       questions.results = results.rows;
       for (let question of questions.results) {
@@ -75,12 +75,15 @@ module.exports = {
 
   addQuestion: async ({question_body, asker_name, asker_email, product_id}) =>  {
     try {
-      await client.query(
-        `INSERT INTO questions
-          (question_body, asker_name, asker_email, product_id)
-         VALUES
-           ('${question_body}', '${asker_name}', '${asker_email}', ${product_id})`
-      );
+      await client.query(`
+        INSERT INTO questions (
+          question_body, asker_name, asker_email, product_id, question_date
+        )
+        VALUES (
+          '${question_body}', '${asker_name}', '${asker_email}',
+           ${product_id}, ${Math.floor(new Date().getTime())}
+        )
+      `);
     } catch (error) {
       return error;
     }
@@ -88,17 +91,18 @@ module.exports = {
 
   addAnswer: async (qid, {answer_body, answerer_name, answerer_email, photos}) => {
     try {
-      const answerResult = await client.query(
-        `INSERT INTO answers(question_id, answer_body, answerer_name, answerer_email)
-         VALUES('${qid}', '${answer_body}', '${answerer_name}', '${answerer_email}')
-         RETURNING answer_id`
-      );
+      const answerResult = await client.query(`
+        INSERT INTO answers(question_id, answer_body, answerer_name, answerer_email, date)
+        VALUES('${qid}', '${answer_body}', '${answerer_name}',
+        '${answerer_email}', ${Math.floor(new Date().getTime())})
+        RETURNING answer_id
+      `);
       const answerID = answerResult.rows[0].answer_id;
       for (let url of photos) {
-        await client.query(
-          `INSERT INTO photos(answer_id, url)
-           VALUES('${answerID}', '${url}')`
-        );
+        await client.query(`
+          INSERT INTO photos(answer_id, url)
+          VALUES('${answerID}', '${url}')
+        `);
       }
     } catch (error) {
       return error;
