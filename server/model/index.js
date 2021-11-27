@@ -28,7 +28,6 @@ async function queryAnswers(qid, page=0, count=5) {
       const answerID = answer.answer_id;
       obj.id = answerID;
       obj.body = answer.answer_body;
-      console.log(answer.answer_date)
       obj.date = new Date(answer.answer_date).toISOString();
       obj.answerer_name = answer.answerer_name;
       obj.helpfulness = answer.answer_helpfulness;
