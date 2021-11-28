@@ -1,8 +1,8 @@
-const client = require('./../db/postgres/');
+const pool = require('./../db/postgres/');
 
 async function getPhotos(answerID) {
   try {
-    const results = await client.query(`
+    const results = await pool.query(`
       SELECT COALESCE (json_agg(json_build_object('id', photo_id, 'url', url))
       FILTER (WHERE url IS NOT NULL), '[]') AS photos from photos
       WHERE answer_id=${answerID}
@@ -17,7 +17,7 @@ async function getPhotos(answerID) {
 async function queryAnswers(qid, page=0, count=5) {
   try {
     const answers = {};
-    const results = await client.query(`
+    const results = await pool.query(`
       SELECT answer_id, answer_date, answer_body,
       answerer_name, answer_helpfulness, reported
       FROM answers WHERE question_id=${qid}
@@ -46,7 +46,7 @@ module.exports = {
   getQuestions: async ({product_id, page=0, count=5}) => {
     try {
       const questions = {};
-      const results = await client.query(`
+      const results = await pool.query(`
         SELECT question_id, question_body, question_date,
         asker_name, question_helpfulness, reported
         FROM questions WHERE product_id = ${product_id}
@@ -75,7 +75,7 @@ module.exports = {
 
   addQuestion: async ({question_body, asker_name, asker_email, product_id}) =>  {
     try {
-      await client.query(`
+      await pool.query(`
         INSERT INTO questions (
           question_body, asker_name, asker_email, product_id, question_date
         )
@@ -91,7 +91,7 @@ module.exports = {
 
   addAnswer: async (qid, {answer_body, answerer_name, answerer_email, photos}) => {
     try {
-      const answerResult = await client.query(`
+      const answerResult = await pool.query(`
         INSERT INTO answers(question_id, answer_body, answerer_name, answerer_email, date)
         VALUES('${qid}', '${answer_body}', '${answerer_name}',
         '${answerer_email}', ${Math.floor(new Date().getTime())})
@@ -99,7 +99,7 @@ module.exports = {
       `);
       const answerID = answerResult.rows[0].answer_id;
       for (let url of photos) {
-        await client.query(`
+        await pool.query(`
           INSERT INTO photos(answer_id, url)
           VALUES('${answerID}', '${url}')
         `);
