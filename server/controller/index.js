@@ -1,5 +1,11 @@
 const model = require('./../model');
 
+function isValidEmail(email) {
+  console.log('test')
+  const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(email);
+}
+
 module.exports = {
 
   getQuestions: async (req, res) => {
@@ -40,7 +46,9 @@ module.exports = {
       if (response instanceof Error) {
         throw response;
       } else {
-        res.sendStatus(201);
+        isValidEmail(req.body.asker_email)
+          ? res.sendStatus(201)
+          : res.sendStatus(422);
       }
     } catch (error) {
       res.status(500).send(error.message);
@@ -53,7 +61,9 @@ module.exports = {
       if (response instanceof Error) {
         throw response;
       } else {
-        res.sendStatus(201);
+        isValidEmail(req.body.asker_email)
+        ? res.sendStatus(201)
+        : res.sendStatus(422)
       }
     } catch (error) {
       res.status(500).send(error.message);
