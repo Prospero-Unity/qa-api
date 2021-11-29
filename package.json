@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon server/index.js",
     "prepare": "husky install",
-    "test": ""
+    "test": "jest --detectOpenHandles",
+    "test:watch": "jest --watch"
   },
   "repository": {
     "type": "git",
