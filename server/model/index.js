@@ -124,5 +124,17 @@ module.exports = {
     } catch (error) {
       return error;
     }
+  },
+
+  markAnswerHelpful: async (id) => {
+    try {
+      await pool.query(`
+        UPDATE answers
+        SET answer_helpfulness = answer_helpfulness + 1
+        WHERE question_id=${id}
+    `);
+    } catch (error) {
+      return error;
+    }
   }
 }
