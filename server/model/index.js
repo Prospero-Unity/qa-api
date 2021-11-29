@@ -131,7 +131,7 @@ module.exports = {
       await pool.query(`
         UPDATE answers
         SET answer_helpfulness = answer_helpfulness + 1
-        WHERE question_id=${id}
+        WHERE answer_id=${id}
     `);
     } catch (error) {
       return error;
