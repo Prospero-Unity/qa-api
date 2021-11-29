@@ -13,6 +13,9 @@ app.use(express.json());
 app.use(routes);
 app.use(express.static('public'));
 
-app.listen(3000, () => {
-  console.log('listening on port 3000...')
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`listening on port ${PORT}...`)
 });
+
+module.exports = app;
