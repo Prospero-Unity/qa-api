@@ -75,5 +75,57 @@ module.exports = {
         res.status(500).send(error);
       }
     }
+  },
+
+  markQuestionHelpful: async (req, res) => {
+    try {
+      const response = await model.markQuestionHelpful(req.params.question_id);
+      if (response instanceof Error) {
+        throw response;
+      } else {
+        res.sendStatus(200);
+      }
+    } catch (error) {
+      res.status(500).send(error);
+    }
+  },
+
+  markAnswerHelpful: async (req, res) => {
+    try {
+      const response = await model.markAnswerHelpful(req.params.answer_id);
+      if (response instanceof Error) {
+        throw response;
+      } else {
+        res.sendStatus(200);
+      }
+    } catch (error) {
+      res.status(500).send(error);
+    }
+  },
+
+  reportQuestion: async (req, res) => {
+    try {
+      const response = await model.reportQuestion(req.params.question_id);
+      if (response instanceof Error) {
+        throw response;
+      } else {
+        res.sendStatus(200);
+      }
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  },
+
+  reportAnswer: async (req, res) => {
+    try {
+      const response = await model.reportAnswer(req.params.answer_id);
+      if (response instanceof Error) {
+        throw response;
+      } else {
+        res.sendStatus(200);
+      }
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
   }
 }

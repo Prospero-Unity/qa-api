@@ -31,6 +31,7 @@ async function queryAnswers(qid, page=0, count=5) {
       obj.date = new Date(answer.answer_date).toISOString();
       obj.answerer_name = answer.answerer_name;
       obj.helpfulness = answer.answer_helpfulness;
+      obj.reported = answer.reported
       const photos = await getPhotos(answerID);
       obj.photos = photos;
       answers[answerID] = obj;
@@ -104,6 +105,59 @@ module.exports = {
           VALUES('${answerID}', '${url}')
         `);
       }
+    } catch (error) {
+      return error;
+    }
+  },
+
+  markQuestionHelpful: async (id) => {
+    try {
+      const response = await pool.query(`
+        UPDATE questions
+        SET question_helpfulness = question_helpfulness + 1
+        WHERE question_id=${id}
+    `);
+    if (response instanceof Error) {
+      throw resposne;
+    } else {
+      return response
+    }
+    } catch (error) {
+      return error;
+    }
+  },
+
+  markAnswerHelpful: async (id) => {
+    try {
+      await pool.query(`
+        UPDATE answers
+        SET answer_helpfulness = answer_helpfulness + 1
+        WHERE answer_id=${id}
+    `);
+    } catch (error) {
+      return error;
+    }
+  },
+
+  reportQuestion: async (id) => {
+    try {
+      await pool.query(`
+        UPDATE questions
+        SET reported = true
+        WHERE question_id=${id}
+      `)
+    } catch (error) {
+      return error;
+    }
+  },
+
+  reportAnswer: async (id) => {
+    try {
+      await pool.query(`
+        UPDATE answers
+        SET reported = true
+        WHERE answer_id=${id}
+      `)
     } catch (error) {
       return error;
     }
