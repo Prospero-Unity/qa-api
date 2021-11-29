@@ -1,7 +1,6 @@
 const model = require('./../model');
 
 function isValidEmail(email) {
-  console.log('test')
   const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(email);
 }
@@ -18,7 +17,7 @@ module.exports = {
         res.send(questions);
       }
     } catch (error) {
-      res.status(500).send(error.message);
+      res.status(500).send(error);
     }
   },
 
@@ -36,7 +35,7 @@ module.exports = {
         res.send(answers);
       }
     } catch (error) {
-      res.status(500).send(error.message);
+      res.status(500).send(error);
     }
   },
 
@@ -45,13 +44,17 @@ module.exports = {
       const response = await(model.addQuestion(req.body));
       if (response instanceof Error) {
         throw response;
+      } else if (!isValidEmail(req.body.asker_email)) {
+        throw new TypeError('Unprocessable Entity: Invalid Email');
       } else {
-        isValidEmail(req.body.asker_email)
-          ? res.sendStatus(201)
-          : res.sendStatus(422);
+        res.sendStatus(201)
       }
     } catch (error) {
-      res.status(500).send(error.message);
+      if (error instanceof TypeError) {
+        res.status(422).send(error.message);
+      } else {
+        res.status(500).send(error);
+      }
     }
   },
 
@@ -60,13 +63,17 @@ module.exports = {
       const response = await(model.addAnswer(req.params.question_id, req.body));
       if (response instanceof Error) {
         throw response;
+      } else if (!isValidEmail(req.body.answerer_email)) {
+        throw new TypeError('Unprocessable Entity: Invalid Email');
       } else {
-        isValidEmail(req.body.asker_email)
-        ? res.sendStatus(201)
-        : res.sendStatus(422)
+        res.sendStatus(201)
       }
     } catch (error) {
-      res.status(500).send(error.message);
+      if (error instanceof TypeError) {
+        res.status(422).send(error.message);
+      } else {
+        res.status(500).send(error);
+      }
     }
   }
 }
