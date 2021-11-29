@@ -83,7 +83,7 @@ module.exports = {
       if (response instanceof Error) {
         throw response;
       } else {
-        res.send(req.params.question_id);
+        res.sendStatus(200);
       }
     } catch (error) {
       res.status(500).send(error);
@@ -96,7 +96,7 @@ module.exports = {
       if (response instanceof Error) {
         throw response;
       } else {
-        res.send(req.params.answer_id);
+        res.sendStatus(200);
       }
     } catch (error) {
       res.status(500).send(error);
