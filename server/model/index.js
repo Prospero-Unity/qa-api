@@ -107,5 +107,22 @@ module.exports = {
     } catch (error) {
       return error;
     }
+  },
+
+  markQuestionHelpful: async (id) => {
+    try {
+      const response = await pool.query(`
+        UPDATE questions
+        SET question_helpfulness = question_helpfulness + 1
+        WHERE question_id=${id}
+    `);
+    if (response instanceof Error) {
+      throw resposne;
+    } else {
+      return response
+    }
+    } catch (error) {
+      return error;
+    }
   }
 }
