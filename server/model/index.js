@@ -92,7 +92,7 @@ module.exports = {
   addAnswer: async (qid, {answer_body, answerer_name, answerer_email, photos}) => {
     try {
       const answerResult = await pool.query(`
-        INSERT INTO answers(question_id, answer_body, answerer_name, answerer_email, date)
+        INSERT INTO answers(question_id, answer_body, answerer_name, answerer_email, answer_date)
         VALUES('${qid}', '${answer_body}', '${answerer_name}',
         '${answerer_email}', ${Math.floor(new Date().getTime())})
         RETURNING answer_id
