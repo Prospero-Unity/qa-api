@@ -114,5 +114,18 @@ module.exports = {
     } catch (error) {
       res.status(500).send(error.message);
     }
+  },
+
+  reportAnswer: async (req, res) => {
+    try {
+      const response = await model.reportAnswer(req.params.answer_id);
+      if (response instanceof Error) {
+        throw response;
+      } else {
+        res.sendStatus(200);
+      }
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
   }
 }
