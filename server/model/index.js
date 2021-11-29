@@ -136,5 +136,17 @@ module.exports = {
     } catch (error) {
       return error;
     }
+  },
+
+  reportQuestion: async (id) => {
+    try {
+      await pool.query(`
+        UPDATE questions
+        SET reported = true
+        WHERE question_id=${id}
+      `)
+    } catch (error) {
+      return error;
+    }
   }
 }
