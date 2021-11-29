@@ -75,5 +75,18 @@ module.exports = {
         res.status(500).send(error);
       }
     }
+  },
+
+  markQuestionHelpful: async (req, res) => {
+    try {
+      const response = await model.markQuestionHelpful(req.params.question_id);
+      if (response instanceof Error) {
+        throw response;
+      } else {
+        res.send(req.params.question_id);
+      }
+    } catch (error) {
+      res.status(500).send(error);
+    }
   }
 }
