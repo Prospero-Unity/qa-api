@@ -88,5 +88,18 @@ module.exports = {
     } catch (error) {
       res.status(500).send(error);
     }
+  },
+
+  markAnswerHelpful: async (req, res) => {
+    try {
+      const response = await model.markAnswerHelpful(req.params.answer_id);
+      if (response instanceof Error) {
+        throw response;
+      } else {
+        res.send(req.params.answer_id);
+      }
+    } catch (error) {
+      res.status(500).send(error);
+    }
   }
 }
