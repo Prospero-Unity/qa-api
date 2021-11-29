@@ -148,5 +148,17 @@ module.exports = {
     } catch (error) {
       return error;
     }
+  },
+
+  reportAnswer: async (id) => {
+    try {
+      await pool.query(`
+        UPDATE answers
+        SET reported = true
+        WHERE answer_id=${id}
+      `)
+    } catch (error) {
+      return error;
+    }
   }
 }
