@@ -31,6 +31,7 @@ async function queryAnswers(qid, page=0, count=5) {
       obj.date = new Date(answer.answer_date).toISOString();
       obj.answerer_name = answer.answerer_name;
       obj.helpfulness = answer.answer_helpfulness;
+      obj.reported = answer.reported
       const photos = await getPhotos(answerID);
       obj.photos = photos;
       answers[answerID] = obj;
