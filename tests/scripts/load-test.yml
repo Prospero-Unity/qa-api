@@ -1,0 +1,45 @@
+
+config:
+  target: "http://127.0.0.1:3000/qa"
+  processor: "./load-test.js"
+  phases:
+    - duration: 60
+      arrivalRate: 5
+      name: Warm up
+    - duration: 120
+      arrivalRate: 5
+      rampTo: 50
+      name: Ramp up load
+    - duration: 600
+      arrivalRate: 50
+      name: Sustained load
+
+scenarios:
+  - name: "GET and POST questions for product"
+    flow:
+      - function: "generateProductID"
+      - post:
+          url: "/questions"
+          json:
+            product_id: "{{ product_id }}"
+            question_body: "Testing..."
+            asker_name: "Test Test"
+            asker_email: "test@test.com"
+      - get:
+          url: "/questions"
+          qs:
+            product_id: "{{ product_id }}"
+      - think: 5
+  - name: "GET and POST answers to a question"
+    flow:
+      - function: "generateAnswerParams"
+      - post:
+          url: "/questions/{{ question_id }}/answers"
+          json:
+            answer_body: "Testing..."
+            answerer_email: "test123@test.com"
+            answerer_name: "Test Test"
+            photos: "{{ photos }}"
+      - get:
+          url: "/questions/{{ question_id }}/answers"
+      - think: 5
