@@ -1,7 +1,3 @@
-/* CREATE DATABASE IF NOT EXISTS SDC */
-
-/* USE SDC */
-
 CREATE TABLE questions(
   question_id SERIAL NOT NULL,
   question_body text NOT NULL,
@@ -74,18 +70,18 @@ CREATE INDEX question_index ON questions(product_id);
 /* Copy data to tables */
 -- id, product_id, body, date_written, asker_name, asker_email, reported, helpful
 COPY questions (question_id, product_id, question_body, question_date, asker_name, asker_email, reported, question_helpfulness)
-  FROM '/Users/eric/HackReactor/sdc/qa-api/csv/questions.csv'
+  FROM '/home/ubuntu/qa-api/csv/questions.csv'
     DELIMITER ','
     CSV HEADER;
 
 -- id,question_id,body,date_written,answerer_name,answerer_email,reported,helpful
 COPY answers (answer_id, question_id, answer_body, answer_date, answerer_name, answerer_email, reported, answer_helpfulness)
-  FROM '/Users/eric/HackReactor/sdc/qa-api/csv/answers.csv'
+  FROM '/home/ubuntu/qa-api/csv/answers.csv'
     DELIMITER ','
     CSV HEADER;
 
 COPY photos (photo_id, answer_id, url)
-  FROM '/Users/eric/HackReactor/sdc/qa-api/csv/answers_photos.csv'
+  FROM '/home/ubuntu/qa-api/csv/answers_photos.csv'
     DELIMITER ','
     CSV HEADER;
 
