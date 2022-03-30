@@ -2,7 +2,7 @@
 
 ## Summary
 
-> API service that provides questions and answers about specified products
+> API service that provides questions and answers for clothing products
 
 ## Main Technologies
 * PostgresSQL: Version 14
